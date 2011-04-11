@@ -1,0 +1,23 @@
+<tal:block metal:use-macro="python:here.getFormsTool().getForm('site_admin_template').macros['page']">
+
+<h1 metal:fill-slot="title" i18n:translate="">Portal statistics</h1>
+
+<tal:block metal:fill-slot="section">
+
+<div id="tabbedmenu">
+	<ul>
+		<li id="currenttab"><a tal:attributes="href string:${here/absolute_url}/admin_stats" i18n:translate="">Statistics</a></li>
+		<li><a tal:attributes="href string:${here/absolute_url}/admin_account" i18n:translate="">Settings</a></li>
+		<li><a tal:attributes="href string:${here/absolute_url}/admin_verify" i18n:translate="">Verfication codes</a></li>
+	</ul>
+</div>
+<br clear="all" />
+<tal:block define="authorized here/checkAuthorization">
+
+<tal:block condition="authorized" content="structure here/stats_info" />
+
+<p tal:condition="not:authorized">You don't have access to the Google Analytics statistics. You need to grant access to your account from the <a tal:attributes="href string:${here/absolute_url}/admin_account">settings</a> page.</p>
+</tal:block>
+
+</tal:block>
+</tal:block>

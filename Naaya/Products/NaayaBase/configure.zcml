@@ -1,0 +1,79 @@
+<configure xmlns='http://namespaces.zope.org/zope'
+           xmlns:five="http://namespaces.zope.org/five"
+           xmlns:zcml="http://namespaces.zope.org/zcml">
+  <include package=".adapter" />
+
+  <class class=".NyContentType.NyContentType">
+    <implements interface="Products.NaayaCore.CatalogTool.interfaces.INyCatalogAware" />
+  </class>
+
+  <include package="contentratings" />
+  <five:implements class=".NyContentType.NyContentType"
+    interface="contentratings.interfaces.IUserRatable" />
+
+  <adapter
+    for=".NyRoleManager.NyRoleManager"
+    provides="zope.annotation.interfaces.IAnnotations"
+    factory="zope.annotation.attribute.AttributeAnnotations"
+    />
+
+  <adapter
+    for="AccessControl.interfaces.IRoleManager"
+    provides=".interfaces.IRoleLogger"
+    factory=".NyRoleManager.RoleLogger"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_add_local_role"
+    for=".interfaces.INyAddLocalRoleEvent"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_set_local_role"
+    for=".interfaces.INySetLocalRoleEvent"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_del_local_role"
+    for=".interfaces.INyDelLocalRoleEvent"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_add_user_role"
+    for=".interfaces.INyAddUserRoleEvent"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_set_user_role"
+    for=".interfaces.INySetUserRoleEvent"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_del_user_role"
+    for=".interfaces.INyDelUserRoleEvent"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_add_group_roles"
+    for=".interfaces.INyAddGroupRoleEvent"
+    />
+
+  <subscriber
+    handler=".subscribers.handle_remove_group_roles"
+    for=".interfaces.INyRemoveGroupRoleEvent"
+    />
+
+  <class class=".NyComments.NyComment">
+    <implements interface="Products.NaayaCore.CatalogTool.interfaces.INyCatalogAware" />
+  </class>
+
+  <subscriber handler=".NyComments.handleComentedObject" />
+
+  <configure zcml:condition="installed Products.naayaUpdater">
+    <utility name="skip_approval_permission.update"
+             provides="Products.naayaUpdater.interfaces.IUpdateScript"
+             component=".updates.SkipApprovalPermission"
+             permission="zope2.ViewManagementScreens" />
+  </configure>
+
+</configure>

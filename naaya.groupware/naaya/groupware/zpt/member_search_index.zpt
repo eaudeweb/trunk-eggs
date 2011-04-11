@@ -1,0 +1,110 @@
+<metal:block metal:use-macro="here/standard_template_macro">
+
+<metal:block metal:fill-slot="header-title">
+    <title tal:content="string:${here/title} | ${here/site_title}" />
+</metal:block>
+
+<metal:block metal:fill-slot="body" tal:define="is_member here/is_member;
+                    site_url here/getSitePath;
+                    search_string request/form/search_string|nothing;
+                    reverse_sort python:request.get('reverse_sort', 'False');
+                    sort_by python:request.get('sort_by', '');">
+    <h1 i18n:translate="">Interest Group member search</h1>
+    <p i18n:translate="">
+    Search for members of this Interest Group. Leave name blank to show all.
+    </p>
+    <form id="search_form" action="" method="get">
+        <label for="search_string" i18n:translate="">
+            Name contains</label>
+        <input type="text" name="search_string:utf8:ustring" id="search_string"
+            tal:attributes="value search_string"/>
+        <input type="submit" value="Search"/>
+    </form>
+
+    <div id="search_results">
+        <tal:block condition="python:search_string is not None"
+            tal:content="structure python:here.search_users(search_string,
+                                                            sort_by,
+                                                            reverse_sort)"/>
+    </div>
+    <div id="search_waiting_response" style="display:none">
+        <img src="misc_/Naaya/ajax-loader.gif" align="left"/>
+        <p i18n:translate="">
+            Waiting for search results.
+        </p>
+    </div>
+
+    <script type="text/javascript"
+        tal:attributes="src string:${site_url}/misc_/Naaya/jquery.form.js">
+    </script>
+    <script type="text/javascript"
+        tal:content="string:var is_member='${is_member}';"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#search_form').ajaxForm({
+                url: 'search_users',
+                beforeSubmit: beforeSubmit,
+                success: processResponse,
+                error: searchError
+            });
+        });
+        function beforeSubmit() {
+            search_string = $('#search_string').val();
+            showWatingForResponse();
+        }
+        function processResponse(data) {
+            $('#search_results').html(data);
+
+            if (is_member == 'False') {
+                sort_attrs = ['name', 'organisation'];
+            } else {
+                sort_attrs = ['name', 'organisation', 'userid', 'access_level']
+            }
+            for (var attr_i = 0; attr_i < sort_attrs.length; attr_i++) {
+                var sort_attr = sort_attrs[attr_i];
+                resetSortLink(sort_attr);
+            }
+
+            $('#search_waiting_response').css('display', 'none');
+            $('#search_results').css('display', 'block');
+        }
+        function searchError() {
+            $('#search_waiting_response').css('display', 'none');
+            alert('Error on search');
+        }
+        function resetSortLink(sort_attr) {
+            $('#sort_by_'+sort_attr).attr('href', '');
+
+            if ($('#sort_asc_by_'+sort_attr).length > 0) {
+                has_sort_icon = true;
+            } else {
+                has_sort_icon = false;
+            }
+            setSortLink(sort_attr, has_sort_icon);
+        }
+        function setSortLink(sort_attr, reverse) {
+            $('#sort_by_'+sort_attr).click(function() {
+                showWatingForResponse();
+                sort_param = 'sort_by=' + sort_attr;
+                search_param = 'search_string=' + search_string;
+                url_params = '?'+sort_param+'&'+search_param;
+                if (reverse) {
+                    reverse_param = 'reverse_sort=True';
+                    url_params = url_params+'&'+reverse_param;
+                }
+                $.ajax({
+                    url: 'search_users' + url_params,
+                    success: processResponse,
+                    error: searchError
+                });
+                return false;
+            });
+        }
+        function showWatingForResponse() {
+            $('#search_waiting_response').css('display', 'block');
+            $('#search_results').css('display', 'none');
+        }
+    </script>
+</metal:block>
+
+</metal:block>

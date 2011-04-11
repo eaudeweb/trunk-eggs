@@ -1,0 +1,40 @@
+"""
+This module contains global constants.
+"""
+
+
+import Globals
+
+
+NAAYABASE_PRODUCT_NAME = 'NaayaBase'
+NAAYABASE_PRODUCT_PATH = Globals.package_home(globals())
+
+PERMISSION_ADMINISTRATE = 'Naaya - Access administrative area'
+PERMISSION_PUBLISH_OBJECTS = 'Naaya - Publish content'
+PERMISSION_EDIT_OBJECTS = 'Naaya - Edit content'
+PERMISSION_COPY_OBJECTS = 'Naaya - Copy content'
+PERMISSION_DELETE_OBJECTS = 'Naaya - Delete content'
+PERMISSION_TRANSLATE_PAGES = 'Naaya - Translate pages'
+PERMISSION_VALIDATE_OBJECTS = 'Naaya - Validate content'
+PERMISSION_COMMENTS_ADD = 'Naaya - Add comments for content'
+PERMISSION_COMMENTS_MANAGE = 'Naaya - Manage comments for content'
+PERMISSION_PUBLISH_DIRECT = 'Naaya - Publish direct'
+PERMISSION_SKIP_CAPTCHA = 'Naaya - Skip Captcha'
+PERMISSION_BULK_DOWNLOAD = 'Naaya - Bulk download'
+PERMISSION_SKIP_APPROVAL = 'Naaya - Skip approval'
+
+# Exceptions
+EXCEPTION_NOTIMPLEMENTED = 'NotImplemented'
+EXCEPTION_NOTACCESIBLE = 'NotAccesible'
+EXCEPTION_NOTAUTHORIZED = 'Unauthorized'
+EXCEPTION_NOTAUTHORIZED_MSG = 'You are not authorized to access this resource'
+EXCEPTION_NOVERSION = 'NoVersionStarted'
+EXCEPTION_NOVERSION_MSG = 'The object hasn\'t been locked out'
+EXCEPTION_STARTEDVERSION = 'VersionStarted'
+EXCEPTION_STARTEDVERSION_MSG = 'The object is locked out'
+EXCEPTION_PARSINGFILE = 'Error parsing file %s: %s'
+
+# Others
+MESSAGE_SAVEDCHANGES = 'Saved changes. (${date})'
+MESSAGE_NOTFROMEMAIL = 'The Sender email was not provided. Changes NOT saved (%s)'
+ERROR_NOTHING_SELECTED = 'Nothing was selected.'

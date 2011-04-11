@@ -1,0 +1,114 @@
+<metal:block metal:use-macro="here/standard_template_macro">
+<metal:block fill-slot="meta">
+    <meta tal:define="description here/description;
+                      content python:here.html2text(description);"
+          tal:condition="content"
+          tal:attributes="content content" name="description" />
+    <meta tal:attributes="content here/contributor" name="author" />
+    <meta tal:attributes="content here/gl_get_selected_language"
+          name="dc.language" />
+    <meta tal:attributes="content string:${here/title} | ${here/site_title}"
+          name="title" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</metal:block>
+
+<!-- <metal:block metal:fill-slot="header-title">
+    <title tal:content="string:${here/title} | ${here/site_title}" />
+</metal:block> -->
+
+<metal:block fill-slot="body"
+    tal:define="review_template python:'tools/general_template/general-template' in here.target_path;
+                is_entitled here/checkPermissionPublishObjects;
+                site here/getSite">
+<link rel="stylesheet" type="text/css" media="all"
+      tal:define="stool here/portal_survey;"
+      tal:attributes="href string:${stool/absolute_url}/css_survey_common" />
+
+<h1 tal:content="here/title_or_id"></h1>
+<div class="floated-buttons">
+    <span class="buttons">
+        <a tal:define="answer_url string:${site/absolute_url}/${here/target_path}"
+            tal:attributes="href string:${answer_url}?edit=1">Go to the original answer</a>
+    </span>
+</div>
+
+<div class="widgetViewMode" style="background-color:#FFF9D4"
+    tal:condition="is_entitled">
+    <tal:block define="approved_date python:here.approved_date(here);
+                suggestions here/suggestions" tal:condition="review_template">
+        <tal:block condition="approved_date">
+            <div>
+                <strong i18n:translate="" class="widget-title">
+                    This assessment has been approved
+                </strong>
+            </div>
+            <br/>
+            <div style="width:200px">
+                <a class="survey-button"
+                    tal:attributes="href string:unapprove_assessment" i18n:translate="">
+                        Unapprove assessment
+                </a>
+            </div>
+            <br/>
+        </tal:block>
+        <tal:block condition="not:approved_date">
+            <p>
+                <strong i18n:translate="" class="message-error">
+                    This assessment is not yet approved
+                </strong>
+            </p>
+            <br/>
+            <div>
+                <a class="survey-button"
+                    tal:attributes="href string:approve_assessment" i18n:translate="">
+                        Approve assessment
+                </a>
+            </div>
+            <br/>
+            <form id="send_suggestion" name="send_suggestion" method="post" action=".">
+                <label for="suggestion" i18n:translate="">Send a suggestion to the uploader</label><br/>
+                <textarea id="suggestion" name="suggestion:utf8:ustring" cols="50" rows="5"></textarea><br/>
+                <input type="submit" name="add_suggestion:method" value="Send" i18n:attributes="value"/>
+            </form>
+            <br/>
+        </tal:block>
+        <tal:block condition="suggestions">
+            <div>
+                <strong i18n:translate="" tal:condition="suggestions">
+                    Following suggestion(s) were emailed to the uploader:
+                </strong>
+            </div>
+            <br/>
+            <ul>
+                <li tal:repeat="suggestion suggestions" tal:content="suggestion"/>
+            </ul>
+            <br/>
+            <div style="width:200px">
+                <a class="survey-button"
+                    tal:attributes="href string:remove_suggestions" i18n:translate="">
+                    Remove suggestions
+                </a>
+            </div>
+        </tal:block>
+        <tal:block condition="not:suggestions">
+            <strong i18n:translate="" >There are no suggestions</strong><br/><br/>
+        </tal:block>
+    </tal:block>
+	<br/>
+	<form id="set_region" name="set_region" method="post" action=".">
+		<strong><label for="geo_coverage_country" i18n:translate="">Geo coverage: country</label></strong><br/><br/>
+		<input id="geo_coverage_country" name="geo_coverage_country:utf8:ustring"
+			size="100" tal:attributes="value here/geo_coverage_country|nothing"/><br/><br/>
+		<strong><label for="geo_coverage_region" i18n:translate="">Geo coverage: region</label></strong><br/><br/>
+		<input id="geo_coverage_region" name="geo_coverage_region:utf8:ustring"
+			size="100" tal:attributes="value here/geo_coverage_region|nothing"/>
+		<br/><br/>
+		<input type="submit" name="set_region:method" value="Save country/region" i18n:attributes="value"/>
+	</form>
+</div>
+
+<tal:block content="structure here/render_answer" />
+
+</metal:block>
+
+</metal:block>

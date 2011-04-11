@@ -1,0 +1,42 @@
+<metal:block define-macro="page" extend-macro="here/standard_template_macro">
+    <metal:block metal:fill-slot="header-title">
+        <title tal:content="string:${here/title} | ${here/site_title}" />
+    </metal:block>
+
+    <metal:block fill-slot="body">
+    <tal:block tal:define="meeting here/getMeeting">
+    <h1>
+        <img tal:attributes="src python:test(meeting.approved, meeting.icon, meeting.icon_marked); title here/get_meta_label; alt here/get_meta_label" />
+        <tal:block tal:replace="meeting/title" /> - Welcome
+    </h1>
+
+    <tal:block condition="not:signup" i18n:translate="">
+        Invalid key.
+    </tal:block>
+    <tal:block condition="signup">
+        <tal:block define="accepted signup/accepted">
+        <tal:block condition="python:accepted == 'new'">
+            You were not accepted to participante to this meeting.
+        </tal:block>
+        <tal:block condition="python:accepted == 'rejected'">
+            You were rejected. You can't participante in the meeting.
+        </tal:block>
+        <tal:block condition="python:accepted == 'accepted'">
+            <p i18n:translate="">
+                Welcome, <tal:block replace="signup/name"/>. You have been accepted to participate to this meeting.
+            </p>
+            <p>
+                Go to meeting <a tal:attributes="href meeting/absolute_url">main page</a>.
+            </p>
+            <p>
+                <a tal:attributes="href string:${request/ACTUAL_URL}?logout=">Logout</a>
+            </p>
+
+        </tal:block>
+        </tal:block>
+
+    </tal:block>
+    </tal:block>
+    </metal:block>
+</metal:block>
+
